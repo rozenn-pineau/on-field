@@ -14,6 +14,29 @@ awk -F'\t' '{print $0 > ($1 ".sync")}' ../excluded_min_filtered_integer.sync.bed
 
 ### Run bedtools intersect
 
+```
+#ran as a batch job
+
+#conda environment
+module load python/anaconda-2022.05
+source /software/python-anaconda-2022.05-el8-x86_64/etc/profile.d/conda.sh
+conda activate /project/kreiner
+
+bed=/scratch/midway3/rozennpineau/on-field/drought-loci/beds/ancestry_corrected_inflated_gemma_gwas_893_header_numeric.assoc.bed
+
+#intersect
+#bedtools version v2.31.1 on March 31
+cd /scratch/midway3/rozennpineau/on-field/drought-loci/sync/chromosomes
+for sync in *.sync; do
+        echo $sync
+        bedtools intersect -a $bed -b $sync -wb -f 0.99 -r >> ../../intersect/intersect_sync_drought_stringent.sync
+        #-r 1 -f 1 requires that there is at least 1 bp match, with 100% of the regions matching
+        # -wb : keep the overlap from b file
+        bedtools intersect -a $bed -b $sync -wb >> ../../intersect/intersect_sync_drought.sync
+done
+```
+
+The more stringent bedtools command is the one to keep, as the less stringent one kept the loci before and after the focal SNP. 
 
 ### Clean intersection file
 ```
@@ -24,6 +47,11 @@ cat ../sync/header intersect_sync_drought_stringent_noheader.sync > intersect_dr
 ```
 
 ### From sync file to AF matrix
+
+Shortcuts/assumptions of this script: 
+Only biallelic (not tri-allelic) SNP are being considered. 
+Anything with less than 5 reads is set to NA. 
+
 ```
 #Rscript
 #upload sync file
