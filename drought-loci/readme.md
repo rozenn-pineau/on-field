@@ -1,9 +1,15 @@
 Goal: to intersect the sync pooled sequencing file with the minimum filtering with the drought loci bed file. 
 
+### Copy file from storage on cds to scratch
+```
+cp /cds3/kreiner/2024_onfield_pools/sync/excluded_mid_filtered.sync ./
+#takes a while because the file is big (>600GB for min filtered file)
+```
+
 ### Prepping the file for bedtools intersect
 ```
 # --> Remove Scaffold_ from chromosome name (bedtools wants integer)
-cat excluded_min_filtered.sync | \sed s/^\Scaffold_//g > excluded_min_filtered_integer.sync
+cat excluded_mid_filtered.sync | \sed s/^\Scaffold_//g > excluded_mid_filtered_integer.sync
 # --> Prep bed format for syn file and intersect
 awk -F'\t' -v OFS='\t' 'BEGIN{OFS=FS} {$3 = $2 OFS $3} 1' excluded_min_filtered_integer.sync > excluded_min_filtered_integer.sync.bed
 #I had to run this step as a batch job on the cluster
