@@ -1,5 +1,13 @@
 # Downloading climate data for the on-field experiment. 
 
+Downloading data from PRISM for the US. Varibles from "an" (all networks, refers to time series focused on
+providing the best estimate possible, at the expense of temporal consistency) include : precipitation (ppt), minimum temperature (tmin),
+maximum temperature (tmax), mean dew point (tdmean), minimum vapor pressure deficit (vpdmin), maximum
+vapor pressure deficit (vpdmax), total global shortwave solar irradiance on a horizontal surface (soltotal), and
+total global solar irradiance on a sloped surface (solslope). Mean temperature (tmean) is derived as the average of
+tmax and tmin. 
+
+
 Other dataset we could use if not satisfied with PRISM: Daymet https://prism.oregonstate.edu/explorer/ (was >3TB to download daily reports for small spatial scale resolution because I could not select a specific year and it goes back to 1950). 
 
 
