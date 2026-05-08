@@ -21,15 +21,17 @@ Once the data is downloaded, unzip the folders to access the raster file (.tif),
 for f in *.zip; do unzip "$f"; rm "$f"; done
 ```
 
-To extract the data for each day of 2024, from April to October (included) and create a separate dataset for each variable, I used a custom R script that leverages the package "terra" for cog files: 
-[extract_climate_data_prism.R](https://github.com/rozenn-pineau/on-field/tree/main/PRISM#:~:text=yesterday-,extract_climate_data_prism.R,-Create%20extract_climate_data_prism.R)
+(1) Pulling climate data for each location : 
+To extract the data for each day of 2024 at specific locations, and create a separate dataset for each variable, I used a custom R script that leverages the package "terra" for cog files: 
+[extract_climate_data_prism](https://github.com/rozenn-pineau/on-field/tree/main/PRISM/extract_climate_data_prism.R)
 
 
-I used a second script to extract climate data relevant to the "in betweens" of our sampling points. For now, this script brings together the climate variables and extract the min, mean and max temperature of each sanpling interval
+(2) Single time points : 
+To extract the climate information at each specific location for each time point, I used the following steps: [single_points_temporal_summaries.R](https://github.com/rozenn-pineau/on-field/tree/main/PRISM/single_points_temporal_summaries.R)
 
 
-
-
+(3) Time intervals : 
+To extract the climate information for the *intervals* of time between each sampling for each sampling location, I used the following steps: [temporal_summaries_intervals.R](https://github.com/rozenn-pineau/on-field/blob/main/PRISM/temporal_summaries_intervals.R)
 
 
 
