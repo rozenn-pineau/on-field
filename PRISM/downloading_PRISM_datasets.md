@@ -33,5 +33,9 @@ To extract the climate information at each specific location for each time point
 (3) Time intervals : 
 To extract the climate information for the *intervals* of time between each sampling for each sampling location, I used the following steps: [temporal_summaries_intervals.R](https://github.com/rozenn-pineau/on-field/blob/main/PRISM/temporal_summaries_intervals.R)
 
+(4) 30 days prior to sampling : 
+To extract the climate information for the 30 days before the first sampling for each sampling location, I used the following steps: [30day_prior_first_sampling.R](https://github.com/rozenn-pineau/on-field/blob/main/PRISM/30day_prior_first_sampling.R)
+
+
 
 
