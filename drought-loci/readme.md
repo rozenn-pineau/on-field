@@ -43,9 +43,18 @@ awk -F'\t' '{print $0 > ($1 ".sync")}' ../excluded_mid_filtered_integer.sync.bed
 
 
 ### Run bedtools intersect
-
+A lot of memory required for this job:
 ```
-#ran as a batch job
+#!/bin/bash
+#SBATCH --job-name=bedtools
+#SBATCH --output=slurm.out
+#SBATCH --error=slurm.err
+#SBATCH --time=5:00:00
+#SBATCH --partition=bigmem
+#SBATCH --account=pi-kreiner
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --mem-per-cpu=200GB
 
 #conda environment
 module load python/anaconda-2022.05
