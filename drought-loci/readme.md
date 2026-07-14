@@ -7,16 +7,40 @@ cp /cds3/kreiner/2024_onfield_pools/sync/excluded_mid_filtered.sync ./
 ```
 
 ### Prepping the file for bedtools intersect
+
+(1) Remove Scaffold_ from chromosome name (bedtools wants integer)
+
+(2) Make bed from sync file for bedtools intersect
+
+(3) Split into scaffolds (memory intensive job)
+
 ```
 # --> Remove Scaffold_ from chromosome name (bedtools wants integer)
 cat excluded_mid_filtered.sync | \sed s/^\Scaffold_//g > excluded_mid_filtered_integer.sync
-# --> Prep bed format for syn file and intersect
-awk -F'\t' -v OFS='\t' 'BEGIN{OFS=FS} {$3 = $2 OFS $3} 1' excluded_mid_filtered_integer.sync > excluded_mid_filtered_integer.sync.bed
-#I had to run this step as a batch job on the cluster
-# --> Split into Scaffolds (bedtools intersect command line out of memory if not)
-awk -F'\t' '{print $0 > ($1 ".sync")}' ../excluded_mid_filtered_integer.sync.bed
-#also ran on the cluster as a batch job
 ```
+Following steps ran as a batch job:
+
+```
+#!/bin/bash
+#SBATCH --job-name=split
+#SBATCH --output=slurm.out
+#SBATCH --error=slurm.err
+#SBATCH --time=5:00:00
+#SBATCH --partition=caslake
+#SBATCH --account=pi-kreiner
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --mem-per-cpu=10G
+
+# --> Prep bed format for syn file and intersect
+cd /scratch/midway2/rozennpineau/on-field/sync
+awk -F'\t' -v OFS='\t' 'BEGIN{OFS=FS} {$3 = $2 OFS $3} 1' excluded_mid_filtered_integer.sync > excluded_mid_filtered_integer.sync.bed
+
+# --> Split into Scaffolds (bedtools intersect command line out of memory if not)
+cd /scratch/midway2/rozennpineau/on-field/sync/scaffolds
+awk -F'\t' '{print $0 > ($1 ".sync")}' ../excluded_mid_filtered_integer.sync.bed
+```
+
 
 ### Run bedtools intersect
 
@@ -26,13 +50,16 @@ awk -F'\t' '{print $0 > ($1 ".sync")}' ../excluded_mid_filtered_integer.sync.bed
 #conda environment
 module load python/anaconda-2022.05
 source /software/python-anaconda-2022.05-el8-x86_64/etc/profile.d/conda.sh
-conda activate /project/kreiner
+conda activate /project/kreiner/rpineau/bedtools
 
-bed=/scratch/midway3/rozennpineau/on-field/drought-loci/beds/ancestry_corrected_inflated_gemma_gwas_893_header_numeric.assoc.bed
+bed=/scratch/midway2/rozennpineau/on-field/drought_bed/ancestry_corrected_inflated_gemma_gwas_893_header_numeric.assoc.bed
+out=/scratch/midway2/rozennpineau/on-field/intersect
+cd $out
 
 #intersect
 #bedtools version v2.31.1 on March 31
-cd /scratch/midway3/rozennpineau/on-field/drought-loci/sync/chromosomes
+cd /scratch/midway2/rozennpineau/on-field/sync/scaffolds
+
 for sync in *.sync; do
         echo $sync
         bedtools intersect -a $bed -b $sync -wb -f 0.99 -r >> ../../intersect/intersect_sync_drought_stringent.sync
@@ -40,6 +67,7 @@ for sync in *.sync; do
         # -wb : keep the overlap from b file
         bedtools intersect -a $bed -b $sync -wb >> ../../intersect/intersect_sync_drought.sync
 done
+
 ```
 
 The more stringent bedtools command is the one to keep, as the less stringent one kept the loci before and after the focal SNP. 
