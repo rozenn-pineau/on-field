@@ -17,7 +17,7 @@ library(purrr)
 # -----------------------------
 meta <- fread("/Users/rozenn/Library/CloudStorage/GoogleDrive-rozennpineau@uchicago.edu/My Drive/Work/9.Science/3.OnField/3.Data/metadata/Sample_info.csv")
 
-meta <- meta %>% mutate(Sample_Date = mdy(Sample_Collection_Date))
+meta <- meta %>% mutate(Sample_Date = ymd(Sample_Collection_Date))
 
 # -----------------------------
 # 2. Get first sampling date
